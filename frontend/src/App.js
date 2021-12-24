@@ -9,16 +9,18 @@ function App() {
   const location = useLocation();
   return (
     <div id="app" className="App">
-      <header className="App-header">
+      {/* <header className="App-header">
         <Link to="/settings">Settings</Link> | <Link to="/feed">Feed</Link>
-      </header>
+      </header> */}
 
-      <Routes>
-        <Route path="/" element={<Feed />} />
-        <Route path="/feed" element={<Feed />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/watch" element={<WatchVideo location={location} />} />
-      </Routes>
+      <div className="all-content-container">
+        <Routes>
+          <Route path="/" element={<Feed />} />
+          <Route path="/feed" element={<Feed />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/watch" element={<WatchVideo location={location} />} />
+        </Routes>
+      </div>
     </div>
   );
 }

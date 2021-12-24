@@ -7,7 +7,7 @@ const VideoBox = ({ video }) => {
   }, []);
   const navigate = useNavigate();
   const playVideo = () => {
-    navigate("/watch", { state: { id: video.ID } });
+    navigate("/watch", { state: { id: video.ID, title: video.Name } });
   };
   return (
     <div className="videoBox" onClick={playVideo}>
