@@ -40,6 +40,15 @@ func getVideos(from, to int) []Video {
 	return wantedVids
 }
 
+func searchVideos(searchTerm string) []Video {
+	var filteredVid []Video
+	for _, vid := range allVideos {
+		if strings.Contains(strings.ToLower(vid.Name), strings.ToLower(searchTerm)) {
+			filteredVid = append(filteredVid, vid)
+		}
+	}
+	return filteredVid
+}
 // ---------- Internal Function -----------
 func fetchVideoByID(id string) Video {
 	resp, err := http.Get("https://invidio.xamh.de/api/v1/videos/" + id)

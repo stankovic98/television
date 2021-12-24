@@ -35,5 +35,6 @@ func main() {
   app.Bind(basic)
   app.Bind(getVideos)
   app.Bind(getNumOfVids)
+  app.Bind(searchVideos)
   app.Run()
 }

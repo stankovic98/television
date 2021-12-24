@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getNumOfVideos, getPaginatedVideos } from "../services/backend";
+import {
+  getNumOfVideos,
+  getPaginatedVideos,
+  searchVideos,
+} from "../services/backend";
 import VideoBox from "../components/VideoBox";
 
 const paginationStep = 12;
@@ -9,6 +13,7 @@ const Feed = () => {
   const [selectedVideos, setSelectedVideos] = useState(0);
   const [numOfAllVids, setNumOfAllVids] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
 
   const initData = async () => {
     let res = await getPaginatedVideos(
@@ -19,6 +24,7 @@ const Feed = () => {
     setIsLoading(false);
     let num = await getNumOfVideos();
     setNumOfAllVids(num);
+    setIsSearching(false);
   };
 
   const setPagination = () => {
@@ -33,7 +39,7 @@ const Feed = () => {
         );
       } else {
         paginationBlock.push(
-          <a href="#" onClick={(e) => getPage(e, i)}>
+          <a href="#" onClick={(e) => getPage(e, i)} key={i}>
             {i / paginationStep + 1}
           </a>
         );
@@ -52,6 +58,18 @@ const Feed = () => {
     setIsLoading(false);
   };
 
+  const getSearchResults = async () => {
+    setIsLoading(true);
+    let searchTearm = document.getElementById("searchbar").value;
+    if (searchTearm === "") return;
+    setIsSearching(true);
+    let filteredVideos = await searchVideos(searchTearm);
+    setVideos(filteredVideos);
+    setSelectedVideos(0);
+    setNumOfAllVids(filteredVideos.length);
+    setIsLoading(false);
+  };
+
   useEffect(() => {
     initData();
   }, []);
@@ -59,11 +77,36 @@ const Feed = () => {
   return (
     <div>
       <h1>Become Virtuous</h1>
+      <div className="search-bar">
+        <input type="text" id="searchbar" placeholder="Search..." />
+        <button onClick={getSearchResults}>Search</button>
+      </div>
       <div className="container">
-        {isLoading && <div className="lds-dual-ring"></div>}
-        {videos && videos.map((vid) => <VideoBox video={vid} key={vid.ID} />)}
-        {/* definetly needs pagination */}
-        <div className="pagination">{setPagination()}</div>
+        {isLoading ? (
+          <div className="lds-dual-ring"></div>
+        ) : videos?.length === 0 ? (
+          <div class="no-vids">
+            <p>Sorry but it looks like there aren't any videos</p>
+            {isSearching && (
+              <button className="back-to-main" onClick={initData}>
+                Go back to main page
+              </button>
+            )}
+          </div>
+        ) : (
+          <>
+            {videos.map((vid) => (
+              <VideoBox video={vid} key={vid.ID} />
+            ))}
+            {/* definetly needs pagination */}
+            <div className="pagination">{setPagination()}</div>
+            {isSearching && (
+              <button className="back-to-main" onClick={initData}>
+                Go back to main page
+              </button>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
